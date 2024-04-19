@@ -16,17 +16,17 @@ function App() {
 
 
 
+    const studentNameXPath = "/def:StudentRecordExchangeData/def:StudentDemographicRecord/def:StudentPersonalData/def:Name";
+    const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
+
+
     function parseXML(xmlStr: string) {
         // see [xpath tester](https://extendsclass.com/xpath-tester.html)
-        // call the cleanup later
 
+        // call the cleanup later
         const parser = new DOMParser();
         const doc = parser.parseFromString(xmlStr, "application/xml");
-        // const nsResolver = document.createNSResolver(
-        //     contextNode.ownerDocument === null
-        //         ? contextNode.documentElement
-        //         : contextNode.ownerDocument.documentElement,
-        // );
+
 // print the name of the root element or error message
         const errorNode = doc.querySelector("parsererror");
         if (errorNode) {
@@ -35,9 +35,16 @@ function App() {
         } else {
             // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
             console.log(doc.documentElement.nodeName);
-            const nsResolver = doc.createNSResolver(doc.documentElement);
+            //const nsResolver = doc.createNSResolver(doc.documentElement);
+            const nsResolver = function(ns:string){
+                if (ns === 'ns2'){
+                    return 'http://stumo.transcriptcenter.com'
+                } else {
+                    return 'http://www.sifinfo.org/infrastructure/2.x'
+                }
+            }
             const student = doc.evaluate(
-                "/",
+                allTermsXPath,
                 doc.documentElement,
                 nsResolver,
                 XPathResult.ORDERED_NODE_ITERATOR_TYPE,
@@ -46,7 +53,6 @@ function App() {
             console.log(student)
             let result = student.iterateNext()
             console.log("iterating")
-            console.log(result)
             while (result) {
                 console.log(result); // 1 3 5 7 9
                 result = student.iterateNext();
