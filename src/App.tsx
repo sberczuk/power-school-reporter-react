@@ -4,6 +4,26 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+
+// findElementIterator returns an iterator of all child elements of the specified XPath
+function findElementIterator(doc: Document, allTermsXPath: string) {
+    const nsResolver = function (ns: string) {
+        if (ns === 'ns2') {
+            return 'http://stumo.transcriptcenter.com'
+        } else {
+            return 'http://www.sifinfo.org/infrastructure/2.x'
+        }
+    }
+    const retElement = doc.evaluate(
+        allTermsXPath,
+        doc.documentElement,
+        nsResolver,
+        XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+        null,
+    );
+    return retElement;
+}
+
 function App() {
     const [count, setCount] = useState(0)
     const [report, setReport] = useState('');
@@ -36,20 +56,7 @@ function App() {
             // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
             console.log(doc.documentElement.nodeName);
             //const nsResolver = doc.createNSResolver(doc.documentElement);
-            const nsResolver = function(ns:string){
-                if (ns === 'ns2'){
-                    return 'http://stumo.transcriptcenter.com'
-                } else {
-                    return 'http://www.sifinfo.org/infrastructure/2.x'
-                }
-            }
-            const student = doc.evaluate(
-                allTermsXPath,
-                doc.documentElement,
-                nsResolver,
-                XPathResult.ORDERED_NODE_ITERATOR_TYPE,
-                null,
-            );
+            const student = findElementIterator(doc, allTermsXPath);
             console.log(student)
             let result = student.iterateNext()
             console.log("iterating")
