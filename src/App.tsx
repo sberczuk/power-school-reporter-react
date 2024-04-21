@@ -3,25 +3,34 @@ import {StudentDisplay} from './Student.tsx'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import {findElementIterator} from "./parser.ts";
 
-
-// findElementIterator returns an iterator of all child elements of the specified XPath
-function findElementIterator(doc: Document, allTermsXPath: string) {
-    const nsResolver = function (ns: string) {
-        if (ns === 'ns2') {
-            return 'http://stumo.transcriptcenter.com'
-        } else {
-            return 'http://www.sifinfo.org/infrastructure/2.x'
-        }
+const studentNameXPath = "/def:StudentRecordExchangeData/def:StudentDemographicRecord/def:StudentPersonalData/def:Name";
+const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
+const allCoursesXPath = "//def:Course";
+const allMarkingPeriodsXPath = "//def:MarkingPeriod";
+// build a term from a term node
+function buildCourses(doc:Document, termNode: Node|null) {
+    console.log("Building Terms")
+    const termsIterator = findElementIterator(doc,termNode, allCoursesXPath);
+    let r = termsIterator.iterateNext()
+    while (r) {
+       // console.log( r);
+        buildMarkingPeriods(doc, r)
+        r = termsIterator.iterateNext();
     }
-    const retElement = doc.evaluate(
-        allTermsXPath,
-        doc.documentElement,
-        nsResolver,
-        XPathResult.ORDERED_NODE_ITERATOR_TYPE,
-        null,
-    );
-    return retElement;
+}
+
+function buildMarkingPeriods(doc:Document, courseNode: Node|null) {
+
+    const mpIterator = findElementIterator(doc,courseNode, allMarkingPeriodsXPath);
+    let r = mpIterator.iterateNext()
+    while (r) {
+        console.log("MP")
+        console.log(r);
+        //buildTerm(result)
+        r = mpIterator.iterateNext();
+    }
 }
 
 function App() {
@@ -36,8 +45,7 @@ function App() {
 
 
 
-    const studentNameXPath = "/def:StudentRecordExchangeData/def:StudentDemographicRecord/def:StudentPersonalData/def:Name";
-    const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
+
 
 
     function parseXML(xmlStr: string) {
@@ -56,13 +64,15 @@ function App() {
             // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
             console.log(doc.documentElement.nodeName);
             //const nsResolver = doc.createNSResolver(doc.documentElement);
-            const student = findElementIterator(doc, allTermsXPath);
-            console.log(student)
-            let result = student.iterateNext()
+            const terms = findElementIterator(doc,doc.documentElement, allTermsXPath);
+            console.log(terms)
+            let result = terms.iterateNext()
             console.log("iterating")
+            const courses = []
             while (result) {
-                console.log(result); // 1 3 5 7 9
-                result = student.iterateNext();
+                console.log(result);
+                buildCourses(doc,result)
+                result = terms.iterateNext();
             }
         }
     }

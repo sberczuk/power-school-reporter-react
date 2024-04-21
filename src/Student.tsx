@@ -1,8 +1,4 @@
-interface Student {
-    givenName: string
-    middleName: string
-    familyName: string
-}
+import {Student} from "./types.ts";
 
 interface StudentDisplayProps {
     studentInfo:Student
@@ -17,3 +13,7 @@ export function StudentDisplay(s:StudentDisplayProps){
     </>
     )
 }
+
+
+
+
