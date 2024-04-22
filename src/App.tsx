@@ -3,7 +3,7 @@ import {StudentDisplay} from './Student.tsx'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {findElementIterator} from "./parser.ts";
+import {findElementIterator, findSingleNode} from "./parser.ts";
 
 const studentNameXPath = "/def:StudentRecordExchangeData/def:StudentDemographicRecord/def:StudentPersonalData/def:Name";
 const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
@@ -12,6 +12,13 @@ const allMarkingPeriodsXPath = "//def:MarkingPeriod";
 // build a term from a term node
 function buildCourses(doc:Document, termNode: Node|null) {
     console.log("Building Terms")
+    const codeNode = findSingleNode(doc, termNode, '//def:CourseCode');
+   console.log( codeNode.singleNodeValue)
+    const courseCode = codeNode.singleNodeValue.textContent
+
+    // this assumes that that the nodes exist. If the don't it's an issue
+    const courseTitle = findSingleNode(doc, termNode, '//def:CourseTitle').singleNodeValue.textContent;
+   console.log(courseTitle + ' ' + courseCode)
     const termsIterator = findElementIterator(doc,termNode, allCoursesXPath);
     let r = termsIterator.iterateNext()
     while (r) {
