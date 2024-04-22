@@ -12,30 +12,38 @@ const allMarkingPeriodsXPath = "//def:MarkingPeriod";
 // build a term from a term node
 function buildCourses(doc:Document, termNode: Node|null) {
     console.log("Building Terms")
-    const codeNode = findSingleNode(doc, termNode, '//def:CourseCode');
-   console.log( codeNode.singleNodeValue)
-    const courseCode = codeNode.singleNodeValue.textContent
 
-    // this assumes that that the nodes exist. If the don't it's an issue
-    const courseTitle = findSingleNode(doc, termNode, '//def:CourseTitle').singleNodeValue.textContent;
-   console.log(courseTitle + ' ' + courseCode)
     const termsIterator = findElementIterator(doc,termNode, allCoursesXPath);
     let r = termsIterator.iterateNext()
     while (r) {
-       // console.log( r);
+       console.log( r);
         buildMarkingPeriods(doc, r)
         r = termsIterator.iterateNext();
     }
 }
 
-function buildMarkingPeriods(doc:Document, courseNode: Node|null) {
+function buildMarkingPeriods(doc: Document, courseNode: Node | null ) {
+    const codeNode = findSingleNode(doc, courseNode, '//def:CourseCode');
+    console.log( codeNode.singleNodeValue)
+    const courseCode = codeNode.singleNodeValue.textContent
 
-    const mpIterator = findElementIterator(doc,courseNode, allMarkingPeriodsXPath);
+    // this assumes that that the nodes exist. If the don't it's an issue
+    const courseTitle = findSingleNode(doc, courseNode, '//def:CourseTitle').singleNodeValue.textContent;
+    console.log(courseTitle + ' ' + courseCode)
+
+    const c = {title: courseTitle, content: courseCode}
+
+    const term = findSingleNode(doc, courseNode, '//def:SIF_ExtendedElement[@Name="StoreCode"]');
+    console.log("TERM")
+    console.log(term.singleNodeValue)
+    const mpIterator = findElementIterator(doc, courseNode, allMarkingPeriodsXPath);
     let r = mpIterator.iterateNext()
     while (r) {
-        console.log("MP")
-        console.log(r);
         //buildTerm(result)
+        const pct = findSingleNode(doc, r, '//def:MarkData/def:Percentage').singleNodeValue.textContent
+       console.log(c)
+       console.log(pct)
+        c.
         r = mpIterator.iterateNext();
     }
 }

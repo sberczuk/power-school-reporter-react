@@ -16,7 +16,7 @@ const nsResolver = function (ns: string) {
 }
 
 // findElementIterator returns an iterator of all child elements of the specified XPath
-export function findElementIterator(doc: Document, baseNode:Node, allTermsXPath: string) {
+export function findElementIterator(doc: Document, baseNode:Node|null, allTermsXPath: string) {
 
     const retElement = doc.evaluate(
         allTermsXPath,
