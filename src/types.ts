@@ -18,6 +18,23 @@ interface Course {
 
 }
 
+export interface YearGrades{
+    year: string
+    grades:Grade[]
+}
+
+export interface Grade {
+    code: string
+    title:string
+    instructor:string
+    year:string
+    quarter: string
+    numberGrade: string
+    letterGrade: string
+    comments:string
+    daysAbsent:string
+}
+
 interface Term {
     courses: Course[];
 }

@@ -3,50 +3,40 @@ import {StudentDisplay} from './Student.tsx'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {findElementIterator, findSingleNode} from "./parser.ts";
+import {allTermsXPath, buildCourseGrades, findElementIterator} from "./parser.ts";
+import {YearGrades} from "./types.ts";
 
-const studentNameXPath = "/def:StudentRecordExchangeData/def:StudentDemographicRecord/def:StudentPersonalData/def:Name";
-const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
-const allCoursesXPath = "//def:Course";
-const allMarkingPeriodsXPath = "//def:MarkingPeriod";
-// build a term from a term node
-function buildCourses(doc:Document, termNode: Node|null) {
-    console.log("Building Terms")
+function parseXML(xmlStr: string) {
+    // see [xpath tester](https://extendsclass.com/xpath-tester.html)
 
-    const termsIterator = findElementIterator(doc,termNode, allCoursesXPath);
-    let r = termsIterator.iterateNext()
-    while (r) {
-       console.log( r);
-        buildMarkingPeriods(doc, r)
-        r = termsIterator.iterateNext();
+    // call the cleanup later
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlStr, "application/xml");
+    const allYearData: YearGrades[] = []
+// print the name of the root element or error message
+    const errorNode = doc.querySelector("parsererror");
+    if (errorNode) {
+        console.log("error while parsing");
+        console.log(errorNode);
+    } else {
+        // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
+        console.log(doc.documentElement.nodeName);
+        //const nsResolver = doc.createNSResolver(doc.documentElement);
+        const terms = findElementIterator(doc, doc.documentElement, allTermsXPath);
+        console.log(terms)
+        let r = terms.iterateNext()
+        console.log("iterating")
+        while (r) {
+            console.log(r);
+
+            const g = buildCourseGrades(doc, r);
+            allYearData.push(g);
+            r = terms.iterateNext();
+        }
     }
+    return allYearData
 }
 
-function buildMarkingPeriods(doc: Document, courseNode: Node | null ) {
-    const codeNode = findSingleNode(doc, courseNode, '//def:CourseCode');
-    console.log( codeNode.singleNodeValue)
-    const courseCode = codeNode.singleNodeValue.textContent
-
-    // this assumes that that the nodes exist. If the don't it's an issue
-    const courseTitle = findSingleNode(doc, courseNode, '//def:CourseTitle').singleNodeValue.textContent;
-    console.log(courseTitle + ' ' + courseCode)
-
-    const c = {title: courseTitle, content: courseCode}
-
-    const term = findSingleNode(doc, courseNode, '//def:SIF_ExtendedElement[@Name="StoreCode"]');
-    console.log("TERM")
-    console.log(term.singleNodeValue)
-    const mpIterator = findElementIterator(doc, courseNode, allMarkingPeriodsXPath);
-    let r = mpIterator.iterateNext()
-    while (r) {
-        //buildTerm(result)
-        const pct = findSingleNode(doc, r, '//def:MarkData/def:Percentage').singleNodeValue.textContent
-       console.log(c)
-       console.log(pct)
-        c.
-        r = mpIterator.iterateNext();
-    }
-}
 
 function App() {
     const [count, setCount] = useState(0)
@@ -59,39 +49,6 @@ function App() {
     }
 
 
-
-
-
-
-    function parseXML(xmlStr: string) {
-        // see [xpath tester](https://extendsclass.com/xpath-tester.html)
-
-        // call the cleanup later
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xmlStr, "application/xml");
-
-// print the name of the root element or error message
-        const errorNode = doc.querySelector("parsererror");
-        if (errorNode) {
-            console.log("error while parsing");
-            console.log(errorNode);
-        } else {
-            // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
-            console.log(doc.documentElement.nodeName);
-            //const nsResolver = doc.createNSResolver(doc.documentElement);
-            const terms = findElementIterator(doc,doc.documentElement, allTermsXPath);
-            console.log(terms)
-            let result = terms.iterateNext()
-            console.log("iterating")
-            const courses = []
-            while (result) {
-                console.log(result);
-                buildCourses(doc,result)
-                result = terms.iterateNext();
-            }
-        }
-    }
-
     function onNewFile(e: any) {
         // TODO: shold this use the input eleement event?
         const form = document.getElementById("form");
@@ -103,11 +60,12 @@ function App() {
         // @ts-ignore
         r.readAsText(gradeReport)
         r.onloadend = () => {
-           // console.log('formData:' + r.result)
+            // console.log('formData:' + r.result)
             // @ts-ignore
             setReport(r.result)
-            parseXML(r.result)
-            // maybe parse the xml here
+            const yearGrades = parseXML(r.result);
+            console.log("done parsing data")
+            console.log(yearGrades)
         }
     }
 
