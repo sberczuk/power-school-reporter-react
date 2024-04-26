@@ -1,7 +1,7 @@
 export interface Student {
-    givenName: string
-    middleName: string
-    familyName: string
+    givenName: string,
+    middleName: string,
+    familyName: string,
 }
 
 interface MarkingPeriod {
@@ -18,21 +18,27 @@ interface Course {
 
 }
 
-export interface YearGrades{
+export interface StudentReport {
+    student: Student,
+    grades: YearGrades[]
+}
+
+export interface YearGrades {
     year: string
-    grades:Grade[]
+    grades: Grade[]
 }
 
 export interface Grade {
     code: string
-    title:string
-    instructor:string
-    year:string
+    title: string
+    instructor: string
+    year: string
+    grade: string
     quarter: string
     numberGrade: string
     letterGrade: string
-    comments:string
-    daysAbsent:string
+    comments: string
+    daysAbsent: string
 }
 
 interface Term {

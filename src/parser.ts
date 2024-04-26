@@ -1,4 +1,4 @@
-import {Grade} from "./types.ts"
+import {Grade, StudentReport, YearGrades} from "./types.ts"
 
 // fixXML will remove the mime prefix material and check for a closing tag
 // do this after we get the basic plumbing working
@@ -54,7 +54,7 @@ const gradeLevelXPath = ".//def:GradeLevelWhenTaken/ns1:Code"
 export function buildCourseGrades(doc: Document, termNode: Node | null) {
 
     // console.log("Building Terms")
-    let yearXPath = ".//def:TermInfoData/def:SchoolYear";
+    const yearXPath = ".//def:TermInfoData/def:SchoolYear";
     const year = findSingleNode(doc, termNode, yearXPath).singleNodeValue.textContent;
 
     const coursesIterator = findElementIterator(doc, termNode, allCoursesXPath);
@@ -63,11 +63,11 @@ export function buildCourseGrades(doc: Document, termNode: Node | null) {
     try {
         let r = coursesIterator.iterateNext()
         while (r) {
-            console.log("iterating in buildCourseGrade")
-            console.log(r);
+            // console.log("iterating in buildCourseGrade")
+            // console.log(r);
             const termGrades = buildQuarterlyGrades(doc, r, year);
             allGrades.push(...termGrades)
-            console.log("all grades len " + allGrades.length)
+            // console.log("all grades len " + allGrades.length)
             r = coursesIterator.iterateNext();
         }
     } catch (e) {
@@ -89,6 +89,8 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
 
     const c = {title: courseTitle, content: courseCode}
     const term = findSingleNode(doc, courseNode, quarterXPath);
+    const gradeLevel = findSingleNode(doc, courseNode, gradeLevelXPath).singleNodeValue.textContent;
+
     // console.log("TERM")
     // console.log(term.singleNodeValue)
     const instructorFn = findSingleNode(doc, courseNode, instructorFirstNameXPath).singleNodeValue.textContent;
@@ -103,15 +105,16 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
             console.log('iterating buildQuarterlyGrades')
             console.log(r)
             console.log(codeNode)
-            const pct = findSingleNode(doc, r, '//def:MarkData/def:Percentage').singleNodeValue.textContent
-            const letterGrade = findSingleNode(doc, r, '//def:MarkData/def:Letter').singleNodeValue.textContent
-            const comments = findSingleNode(doc, r, '//def:MarkData/def:Narrative').singleNodeValue.textContent
-            const absent = findSingleNode(doc, r, '//def:DaysAbsent').singleNodeValue.textContent
+            const pct = findSingleNode(doc, r, '//def:MarkData/def:Percentage')?.singleNodeValue?.textContent
+            const letterGrade = findSingleNode(doc, r, '//def:MarkData/def:Letter')?.singleNodeValue?.textContent
+            const comments = findSingleNode(doc, r, '//def:MarkData/def:Narrative')?.singleNodeValue?.textContent
+            const absent = findSingleNode(doc, r, '//def:DaysAbsent')?.singleNodeValue?.textContent
             // console.log(c)
             const g: Grade = {
                 code: courseCode, title: courseTitle,
                 instructor: instructorFn + " " + instructorLn,
                 year: year,
+                grade: gradeLevel,
                 quarter: term.singleNodeValue.textContent,
                 letterGrade: letterGrade,
                 numberGrade: pct,
@@ -126,4 +129,50 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
         console.error(`Error: Document tree modified during iteration ${e}`);
     }
     return allGrades
+}
+
+function buildStudent(doc: Document, documentElement: HTMLElement) {
+    const studentNode = findSingleNode(doc, documentElement, "//def:StudentDemographicRecord/def:StudentPersonalData").singleNodeValue;
+   if (studentNode) {
+       const firstName = findSingleNode(doc, studentNode, ".//def:FirstName").singleNodeValue?.textContent
+       const familyName = findSingleNode(doc, studentNode, ".//def:LastName").singleNodeValue?.textContent
+       const middleName = findSingleNode(doc, studentNode, ".//def:MiddleName").singleNodeValue?.textContent
+
+       return {
+           givenName: firstName,
+           familyName: familyName,
+           middleName: middleName
+       }
+   }
+   return {}
+}
+
+export function parseXML(xmlStr: string): StudentReport {
+    // see [xpath tester](https://extendsclass.com/xpath-tester.html)
+
+    // call the cleanup later
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlStr, "application/xml");
+    const allYearData: Grade[] = []
+    let student
+// print the name of the root element or error message
+    const errorNode = doc.querySelector("parsererror");
+    if (errorNode) {
+        console.log("error while parsing");
+        console.log(errorNode);
+    } else {
+        // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
+         student = buildStudent(doc, doc.documentElement);
+        const terms = findElementIterator(doc, doc.documentElement, allTermsXPath);
+        let r = terms.iterateNext()
+        // console.log("iterating")
+        while (r) {
+            // console.log(r);
+
+            const g = buildCourseGrades(doc, r);
+            allYearData.push(g);
+            r = terms.iterateNext();
+        }
+    }
+    return {student:student, grades:allYearData}
 }

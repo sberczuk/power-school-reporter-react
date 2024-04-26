@@ -3,54 +3,17 @@ import {StudentDisplay} from './Student.tsx'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {allTermsXPath, buildCourseGrades, findElementIterator} from "./parser.ts";
-import {YearGrades} from "./types.ts";
-
-function parseXML(xmlStr: string) {
-    // see [xpath tester](https://extendsclass.com/xpath-tester.html)
-
-    // call the cleanup later
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlStr, "application/xml");
-    const allYearData: YearGrades[] = []
-// print the name of the root element or error message
-    const errorNode = doc.querySelector("parsererror");
-    if (errorNode) {
-        console.log("error while parsing");
-        console.log(errorNode);
-    } else {
-        // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
-        console.log(doc.documentElement.nodeName);
-        //const nsResolver = doc.createNSResolver(doc.documentElement);
-        const terms = findElementIterator(doc, doc.documentElement, allTermsXPath);
-        console.log(terms)
-        let r = terms.iterateNext()
-        console.log("iterating")
-        while (r) {
-            console.log(r);
-
-            const g = buildCourseGrades(doc, r);
-            allYearData.push(g);
-            r = terms.iterateNext();
-        }
-    }
-    return allYearData
-}
+import {parseXML} from "./parser.ts";
+import {Grade, Student, StudentReport, YearGrades,} from "./types.ts";
 
 
 function App() {
     const [count, setCount] = useState(0)
-    const [report, setReport] = useState('');
-
-    const ss = {
-        givenName: 'John',
-        middleName: 'Q',
-        familyName: 'Public'
-    }
-
+    const [student, setStudent] = useState<Student>({familyName: "", givenName: "", middleName: ""})
+    const [allGrades, setAllGrades] = useState<YearGrades[]>([])
 
     function onNewFile(e: any) {
-        // TODO: shold this use the input eleement event?
+        // TODO: should this use the input element event?
         const form = document.getElementById("form");
         // const submitter = document.querySelector("button[value=save]");
         // @ts-ignore
@@ -60,18 +23,21 @@ function App() {
         // @ts-ignore
         r.readAsText(gradeReport)
         r.onloadend = () => {
-            // console.log('formData:' + r.result)
-            // @ts-ignore
-            setReport(r.result)
-            const yearGrades = parseXML(r.result);
-            console.log("done parsing data")
-            console.log(yearGrades)
+            if (typeof r.result === "string") {
+                const data: StudentReport = parseXML(r.result);
+                setStudent(data.student)
+                console.log("STUDENT")
+                console.log(data.student)
+                setAllGrades(data.grades)
+                console.log(data.student)
+                console.log("done parsing data")
+                console.log(data.grades)
+            }
         }
     }
 
     return (
         <>
-
             <div>
                 <a href="https://vitejs.dev" target="_blank">
                     <img src={viteLogo} className="logo" alt="Vite logo"/>
@@ -94,9 +60,25 @@ function App() {
                     {/*<button name="intent" value="save">Process</button>*/}
                 </form>
             </div>
-            <StudentDisplay studentInfo={ss}/>
+
+
+            <StudentDisplay student={student}/>
+
+            <GradeView g={allGrades[0]}/>
         </>
     )
+}
+
+function GradeView({g}: { g: Grade }) {
+   if (g) {
+       return (
+           <>
+               <div>{g.year}</div>
+               <div>{g.quarter}</div>
+               <div>{g.letterGrade}</div>
+           </>
+       )
+   }
 }
 
 export default App

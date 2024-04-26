@@ -1,17 +1,23 @@
 import {Student} from "./types.ts";
 
-interface StudentDisplayProps {
-    studentInfo:Student
-}
 
-export function StudentDisplay(s:StudentDisplayProps){
+
+export function StudentDisplay({student}:{student: Student}) {
+   if (student){
+
     return(
         <>
+            <p>Student Info</p>
         <div>
-            {s.studentInfo.givenName}  {s.studentInfo.middleName} {s.studentInfo.familyName}
+            {student.givenName}  {student.middleName} {student.familyName}
         </div>
-    </>
-    )
+    </>)
+   } else{
+       return  (
+           <> No data</>
+       )
+   }
+
 }
 
 
