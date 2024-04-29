@@ -20,7 +20,7 @@ interface Course {
 
 export interface StudentReport {
     student: Student,
-    grades: YearGrades[]
+    grades: Grade[]
 }
 
 export interface YearGrades {

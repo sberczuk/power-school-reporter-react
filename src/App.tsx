@@ -10,7 +10,7 @@ import {Grade, Student, StudentReport, YearGrades,} from "./types.ts";
 function App() {
     const [count, setCount] = useState(0)
     const [student, setStudent] = useState<Student>({familyName: "", givenName: "", middleName: ""})
-    const [allGrades, setAllGrades] = useState<YearGrades[]>([])
+    const [allGrades, setAllGrades] = useState<Grade[]>([])
 
     function onNewFile(e: any) {
         // TODO: should this use the input element event?
@@ -29,7 +29,6 @@ function App() {
                 console.log("STUDENT")
                 console.log(data.student)
                 setAllGrades(data.grades)
-                console.log(data.student)
                 console.log("done parsing data")
                 console.log(data.grades)
             }
@@ -72,10 +71,14 @@ function GradesView({gg}: { gg: YearGrades[] }) {
     if (!gg) {
         return null
     }
-    const grades = gg.filter((g) => g.year = "2022");
+    const yearGrades = gg.filter((g) => g.year = "2022");
+    // const gradesByClass<string, Grade> = new Map()
+    // yearGrades.grades.forEach((e) =>{
+    //     gradesByClass(e.)
+    // })
     const display = []
-    for (const g of grades) {
-        for (const og of g.grades) {
+    for (const g of yearGrades) {
+        for (const og of g) {
             console.log(og)
             display.push(<GradeView g={og}/>)
         }
@@ -90,6 +93,7 @@ function GradeView({g}: { g: Grade }) {
             <>
                 <div>{g.year}</div>
                 <div>{g.quarter}</div>
+                <div>{g.title}</div>
                 <div>{g.letterGrade}</div>
             </>
         )

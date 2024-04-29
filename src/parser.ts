@@ -1,4 +1,4 @@
-import {Grade, StudentReport, YearGrades} from "./types.ts"
+import {Grade, Student, StudentReport, YearGrades} from "./types.ts"
 
 // fixXML will remove the mime prefix material and check for a closing tag
 // do this after we get the basic plumbing working
@@ -64,7 +64,7 @@ export function buildCourseGrades(doc: Document, termNode: Node | null) {
         let r = coursesIterator.iterateNext()
         while (r) {
             // console.log("iterating in buildCourseGrade")
-            // console.log(r);
+            console.log(r);
             const termGrades = buildQuarterlyGrades(doc, r, year);
             allGrades.push(...termGrades)
             // console.log("all grades len " + allGrades.length)
@@ -73,17 +73,17 @@ export function buildCourseGrades(doc: Document, termNode: Node | null) {
     } catch (e) {
         console.error(`Error: Document tree modified during iteration ${e}`);
     }
-    return {year: year, grades: allGrades}
+    return allGrades
 
 }
 
 function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
-    const codeNode = findSingleNode(doc, courseNode, '//def:CourseCode');
+    const codeNode = findSingleNode(doc, courseNode, './/def:CourseCode');
     // console.log(codeNode.singleNodeValue)
 
     const courseCode = codeNode.singleNodeValue.textContent
     // this assumes that that the nodes exist. If the don't it's an issue
-    const courseTitle = findSingleNode(doc, courseNode, '//def:CourseTitle').singleNodeValue.textContent;
+    const courseTitle = findSingleNode(doc, courseNode, './/def:CourseTitle').singleNodeValue.textContent;
 
     // console.log(courseTitle + ' ' + courseCode)
 
@@ -131,20 +131,20 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
     return allGrades
 }
 
-function buildStudent(doc: Document, documentElement: HTMLElement) {
+function buildStudent(doc: Document, documentElement: HTMLElement):Student {
     const studentNode = findSingleNode(doc, documentElement, "//def:StudentDemographicRecord/def:StudentPersonalData").singleNodeValue;
-   if (studentNode) {
-       const firstName = findSingleNode(doc, studentNode, ".//def:FirstName").singleNodeValue?.textContent
-       const familyName = findSingleNode(doc, studentNode, ".//def:LastName").singleNodeValue?.textContent
-       const middleName = findSingleNode(doc, studentNode, ".//def:MiddleName").singleNodeValue?.textContent
+    if (studentNode) {
+        const firstName = findSingleNode(doc, studentNode, ".//def:FirstName")?.singleNodeValue?.textContent
+        const familyName = findSingleNode(doc, studentNode, ".//def:LastName")?.singleNodeValue?.textContent
+        const middleName = findSingleNode(doc, studentNode, ".//def:MiddleName")?.singleNodeValue?.textContent
 
-       return {
-           givenName: firstName,
-           familyName: familyName,
-           middleName: middleName
-       }
-   }
-   return {}
+        return {
+            givenName: firstName,
+            familyName: familyName,
+            middleName: middleName
+        }
+    }
+    return {givenName: '', middleName: '', familyName: ''}
 }
 
 export function parseXML(xmlStr: string): StudentReport {
@@ -154,7 +154,7 @@ export function parseXML(xmlStr: string): StudentReport {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlStr, "application/xml");
     const allYearData: Grade[] = []
-    let student
+    let student = {givenName: '', middleName: '', familyName: ''}
 // print the name of the root element or error message
     const errorNode = doc.querySelector("parsererror");
     if (errorNode) {
@@ -162,17 +162,17 @@ export function parseXML(xmlStr: string): StudentReport {
         console.log(errorNode);
     } else {
         // see https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
-         student = buildStudent(doc, doc.documentElement);
+        student = buildStudent(doc, doc.documentElement);
         const terms = findElementIterator(doc, doc.documentElement, allTermsXPath);
         let r = terms.iterateNext()
         // console.log("iterating")
         while (r) {
-            // console.log(r);
+             console.log(r);
 
             const g = buildCourseGrades(doc, r);
             allYearData.push(g);
             r = terms.iterateNext();
         }
     }
-    return {student:student, grades:allYearData}
+    return {student: student, grades: allYearData}
 }
