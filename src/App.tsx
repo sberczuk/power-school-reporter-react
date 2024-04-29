@@ -61,24 +61,39 @@ function App() {
                 </form>
             </div>
 
-
             <StudentDisplay student={student}/>
 
-            <GradeView g={allGrades[0]}/>
+            <GradesView gg={allGrades}/>
         </>
     )
 }
 
+function GradesView({gg}: { gg: YearGrades[] }) {
+    if (!gg) {
+        return null
+    }
+    const grades = gg.filter((g) => g.year = "2022");
+    const display = []
+    for (const g of grades) {
+        for (const og of g.grades) {
+            console.log(og)
+            display.push(<GradeView g={og}/>)
+        }
+    }
+
+    return (<>{display}</>)
+}
+
 function GradeView({g}: { g: Grade }) {
-   if (g) {
-       return (
-           <>
-               <div>{g.year}</div>
-               <div>{g.quarter}</div>
-               <div>{g.letterGrade}</div>
-           </>
-       )
-   }
+    if (g) {
+        return (
+            <>
+                <div>{g.year}</div>
+                <div>{g.quarter}</div>
+                <div>{g.letterGrade}</div>
+            </>
+        )
+    }
 }
 
 export default App
