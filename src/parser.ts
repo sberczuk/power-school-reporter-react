@@ -105,10 +105,10 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
             console.log('iterating buildQuarterlyGrades')
             console.log(r)
             console.log(codeNode)
-            const pct = findSingleNode(doc, r, '//def:MarkData/def:Percentage')?.singleNodeValue?.textContent
-            const letterGrade = findSingleNode(doc, r, '//def:MarkData/def:Letter')?.singleNodeValue?.textContent
-            const comments = findSingleNode(doc, r, '//def:MarkData/def:Narrative')?.singleNodeValue?.textContent
-            const absent = findSingleNode(doc, r, '//def:DaysAbsent')?.singleNodeValue?.textContent
+            const pct = findSingleNode(doc, r, './/def:MarkData/def:Percentage')?.singleNodeValue?.textContent
+            const letterGrade = findSingleNode(doc, r, './/def:MarkData/def:Letter')?.singleNodeValue?.textContent
+            const comments = findSingleNode(doc, r, './/def:MarkData/def:Narrative')?.singleNodeValue?.textContent
+            const absent = findSingleNode(doc, r, './/def:DaysAbsent')?.singleNodeValue?.textContent
             // console.log(c)
             const g: Grade = {
                 code: courseCode, title: courseTitle,
@@ -170,7 +170,7 @@ export function parseXML(xmlStr: string): StudentReport {
              console.log(r);
 
             const g = buildCourseGrades(doc, r);
-            allYearData.push(g);
+            allYearData.push(...g);
             r = terms.iterateNext();
         }
     }

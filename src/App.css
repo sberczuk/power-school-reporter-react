@@ -40,3 +40,212 @@
 .read-the-docs {
   color: #888;
 }
+
+/* report card css*/
+
+@media print {
+  div {
+    page-break-inside: avoid;
+  }
+
+  html, body {
+    margin: 0;
+  }
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  border-collapse: collapse;
+  border-style: none;
+  padding: 0;
+  grid-row-gap: 0.5em;
+}
+
+.grade-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-areas:
+                    'q1 q2 q3 q4 y1'
+                    'q1grade q2grade q3grade q4grade y1grade'
+                    'q1absent q2absent q3absent q4absent y1absent'
+                    'q1comment q1comment q1comment q1comment q1comment'
+                    'q2comment q2comment q2comment q2comment q2comment'
+                    'q3comment q3comment q3comment q3comment q3comment'
+                    'q4comment q4comment q4comment q4comment q4comment'
+                    'y1comment y1comment y1comment y1comment y1comment';
+  column-gap: 10px;
+
+  border-collapse: collapse;
+  border-style: solid;
+  padding: 0;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-areas:
+                    'title'
+                    'teacher'
+                    'grades'
+                    'comments';
+  column-gap: 5px;
+  row-gap: 5px;
+
+  border-collapse: collapse;
+  border-style: inset;
+  /*empty-cells: hide;*/
+  padding: 0;
+}
+
+.comments-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-areas:
+                    'q1comment'
+                    'q2comment'
+                    'q3comment'
+                    'q4comment'
+                    'y1comment';
+  column-gap: 2px;
+  border-collapse: collapse;
+  border-style: dotted;
+  /*empty-cells: hide;*/
+  padding: 0;
+}
+
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.period {
+  text-align: center;
+  font-weight: bold;
+}
+
+.course-title {
+  grid-area: title;
+}
+
+.grade-container {
+  grid-area: grades;
+}
+
+
+.comments-container {
+  grid-area: comments;
+  border: black 1px solid;
+
+}
+
+.course-teacher {
+  grid-area: teacher;
+}
+
+.q1 {
+  grid-area: q1;
+}
+
+.grade-q1 {
+  grid-area: q1grade;
+}
+
+.absent-q1 {
+  grid-area: q1absent;
+}
+
+.comments-q1 {
+  grid-area: q1comment;
+}
+
+.q2 {
+  grid-area: q2;
+}
+
+.comments-q2 {
+  grid-area: q2comment;
+}
+
+.grade-q2 {
+  grid-area: q2grade;
+}
+
+.absent-q2 {
+  grid-area: q2absent;
+}
+
+
+.q3 {
+  grid-area: q3;
+}
+
+.grade-q3 {
+  grid-area: q3grade;
+}
+
+.absent-q3 {
+  grid-area: q3absent;
+}
+
+.comments-q3 {
+  grid-area: q3comment;
+}
+
+.q4 {
+  grid-area: q4;
+}
+
+.grade-q4 {
+  grid-area: q4grade;
+}
+
+.absent-q4 {
+  grid-area: q4absent;
+}
+
+.comments-q4 {
+  grid-area: q4comment;
+}
+
+.y1 {
+  grid-area: y1;
+}
+
+
+.grade-y1 {
+  grid-area: y1grade;
+}
+
+.absent-y1 {
+  grid-area: y1absent;
+}
+
+.comments-y1 {
+  grid-area: y1comment;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font: normal .8764em/1.5em Arial, Verdana, sans-serif;
+  margin: 0;
+  padding: 5em;
+}
+
+/* The div the includes the course, grades, and comments*/
+.course {
+  border: 1px solid black;
+  font-weight: bold;
+  margin: .25em;
+  padding: 0.25em;
+}
+
+.teacher {
+  border: 1px solid black;
+  font-weight: bold;
+  margin: .25em;
+  padding: 0.25em;
+}

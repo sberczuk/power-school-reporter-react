@@ -67,34 +67,50 @@ function App() {
     )
 }
 
-function GradesView({gg}: { gg: YearGrades[] }) {
+function GradesView({gg}: { gg: Grade[] }) {
     if (!gg) {
         return null
     }
     const yearGrades = gg.filter((g) => g.year = "2022");
-    // const gradesByClass<string, Grade> = new Map()
-    // yearGrades.grades.forEach((e) =>{
-    //     gradesByClass(e.)
-    // })
+    const gradesByClass = new Map<string, Grade[]>()
+    yearGrades.forEach((e) => {
+        if (!gradesByClass.get(e.code)) {
+            gradesByClass.set(e.code, [])
+        }
+        gradesByClass.get(e.code)?.push(e)
+    })
     const display = []
-    for (const g of yearGrades) {
-        for (const og of g) {
-            console.log(og)
-            display.push(<GradeView g={og}/>)
+
+    // for each class grab each grade and display it
+    function displaySubectGrade(v, k, map) {
+        for (const a of v) {
+            display.push(<GradeView key={a.code + a.year + a.quarter} g={a}/>)
         }
     }
 
-    return (<>{display}</>)
+    gradesByClass.forEach(displaySubectGrade)
+
+
+    return (<>
+        <div class={'gradeContainer'}>
+            {display}
+        </div>
+    </>)
 }
 
 function GradeView({g}: { g: Grade }) {
     if (g) {
         return (
             <>
-                <div>{g.year}</div>
-                <div>{g.quarter}</div>
-                <div>{g.title}</div>
-                <div>{g.letterGrade}</div>
+                <div class={'grid-container'}>
+                    <div class={g.quarter.toLowerCase()}>
+                        <div>{g.year}</div>
+                        <div>{g.quarter}</div>
+                        <div>{g.title}</div>
+                        <div class={'grade-' + g.quarter.toLowerCase()}>{g.letterGrade} {g.grade}</div>
+                    </div>
+                </div>
+
             </>
         )
     }
