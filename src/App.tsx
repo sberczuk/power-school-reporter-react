@@ -59,12 +59,24 @@ function App() {
                     {/*<button name="intent" value="save">Process</button>*/}
                 </form>
             </div>
-
             <StudentDisplay student={student}/>
-
             <GradesView gg={allGrades}/>
         </>
     )
+}
+
+function SubjectView({grades}: {grades:Grade[]}) {
+    const display = []
+    for (const a of grades) {
+        display.push(<GradeView g={a}/>)
+    }
+    return (
+        <>
+            <div class={'grid-container'}>
+                {display}
+            </div>
+        </>
+    );
 }
 
 function GradesView({gg}: { gg: Grade[] }) {
@@ -82,27 +94,33 @@ function GradesView({gg}: { gg: Grade[] }) {
     const display = []
 
     // for each class grab each grade and display it
-    function displaySubectGrade(v, k, map) {
+    function displaySubjectGrade(v, k, map) {
         for (const a of v) {
-            display.push(<GradeView key={a.code + a.year + a.quarter} g={a}/>)
+            // display.push(<GradeView key={a.code + a.year + a.quarter} g={a}/>)
+            display.push(<SubjectView key={a.code+a.year+a.q} grades={v}/>)
         }
     }
 
-    gradesByClass.forEach(displaySubectGrade)
+    gradesByClass.forEach(displaySubjectGrade)
 
 
     return (<>
-        <div class={'gradeContainer'}>
+        <div class={'grid-container'}>
             {display}
         </div>
     </>)
 }
 
-function GradeView({g}: { g: Grade }) {
+function GradeView({
+                       g
+                   }: {
+    g: Grade
+}) {
     if (g) {
         return (
             <>
-                <div class={'grid-container'}>
+                <div class={'grade-container'}>
+
                     <div class={g.quarter.toLowerCase()}>
                         <div>{g.year}</div>
                         <div>{g.quarter}</div>
