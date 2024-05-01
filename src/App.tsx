@@ -74,18 +74,21 @@ function SubjectView({grades}: { grades: Grade[] | undefined }) {
     const displayGrades = []
     const displayComments = []
     let courseTitle = ''
+    let teacher = ''
     let courseCode = ''
     for (const a of grades) {
         const quarter = a.quarter.toLowerCase();
         courseTitle = a.title
         courseCode = a.code
+        teacher = a.instructor
         displayGrades.push(<GradeView g={a}/>)
-        displayComments.push(<div className={'comments-' + quarter + ' comments'}>{a.comments}</div>)
+        displayComments.push(<div className={'comments-' + quarter + ' comments'}>{a.quarter + ': ' + a.comments}</div>)
     }
     return (
         <>
             <div className={'grid-container'}>
                 <div className={'course-title'}>{courseTitle} {courseCode}</div>
+                <div className={'course-teacher teacher'}>{teacher}</div>
                 <div className={'grade-container'}>
                     {displayGrades}
                 </div>
@@ -124,21 +127,9 @@ function GradesView({gg}: { gg: Grade[] }) {
         const rows: React.JSX.Element[] = [];
 
         function displaySubjectGrade(v, k, map) {
-            console.log("displaying " + k + " " + v.length)
-
-            rows.push(<SubjectView key={k } grades={v}/>)
-
-            console.log("DONE displaying " + k)
-
+            rows.push(<SubjectView key={k} grades={v}/>)
         }
 
-        console.log("iterating over grade map")
-
-        function logMapElements(value, key, map) {
-            console.log(`>>>m[${key}] = ${value}`);
-        }
-
-        gradesByClass.forEach(logMapElements)
 
         gradesByClass.forEach(displaySubjectGrade)
         console.log("returning rows >>" + rows.length)
@@ -177,7 +168,7 @@ function GradeView({g}: { g: Grade }) {
                 {/*<div>{g.year}</div>*/}
                 {/*<div>{g.title}</div>*/}
                 <div className={'grade-' + quarter + ' grades'}>{g.letterGrade} {g.numberGrade}</div>
-                <div className={'absent-' + quarter + ' grades'}>{g.daysAbsent}</div>
+                <div className={'absent-' + quarter + ' grades'}>{'absent: ' + g.daysAbsent}</div>
                 {/*</div>*/}
 
             </>
