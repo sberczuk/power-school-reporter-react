@@ -80,7 +80,7 @@ function SubjectView({grades}: { grades: Grade[] | undefined }) {
         courseTitle = a.title
         courseCode = a.code
         displayGrades.push(<GradeView g={a}/>)
-        displayComments.push(<div className={'comments-' +quarter +' comments'}>{a.comments}</div> )
+        displayComments.push(<div className={'comments-' + quarter + ' comments'}>{a.comments}</div>)
     }
     return (
         <>
@@ -99,6 +99,7 @@ function SubjectView({grades}: { grades: Grade[] | undefined }) {
 }
 
 function GradesView({gg}: { gg: Grade[] }) {
+    const [allGrades] = useState<Grade[]>(gg)
     console.log("GRADES VIEW " + gg.length)
     if (!gg) {
         return null
@@ -116,31 +117,53 @@ function GradesView({gg}: { gg: Grade[] }) {
     console.log(gradesByClass)
 
     // for each class grab each grade and display it
-    function displaySubjectGrade(v, k, map) {
-        console.log("displaying " + k + " " + v.length)
-        for (const a of v) {
-            console.log("...displaying " + a.code)
+    let calls = 0
 
-            display.push(<SubjectView key={a.code + a.year + a.quarter} grades={v}/>)
+
+    const buildGradeRows = () => {
+        const rows: React.JSX.Element[] = [];
+
+        function displaySubjectGrade(v, k, map) {
+            console.log("displaying " + k + " " + v.length)
+
+            rows.push(<SubjectView key={k } grades={v}/>)
+
+            console.log("DONE displaying " + k)
+
         }
-        console.log("DONE displaying " + k)
+
+        console.log("iterating over grade map")
+
+        function logMapElements(value, key, map) {
+            console.log(`>>>m[${key}] = ${value}`);
+        }
+
+        gradesByClass.forEach(logMapElements)
+
+        gradesByClass.forEach(displaySubjectGrade)
+        console.log("returning rows >>" + rows.length)
+        return rows
 
     }
-
     // const subjectIterator = gradesByClass.keys()
     // let subject = subjectIterator.next();
     // while (subject) {
-    //     const grades = gradesByClass.get(subject);
-    //     display.push(<SubjectView key={subject} grades={grades}/>)
+    //     let grades:Grade[]
+    //     if (gradesByClass.has(subject.value)){
+    //         // @ts-ignore
+    //         grades =  gradesByClass.get(subject.value);
+    //     }
+    //
+    //     for (const a:Grade of grades) {
+    //         display.push(<SubjectView key={a.code + a.year + a.quarter} grades={grades}/>)
+    //     }
     //
     //     subject = subjectIterator.next()
     // }
-    gradesByClass.forEach(displaySubjectGrade)
 
-    console.log("DISPLAY ARRAY " + display.length)
-    console.log(display)
+
     return (<>
-        {display}
+        {buildGradeRows()}
     </>)
 }
 
@@ -153,7 +176,7 @@ function GradeView({g}: { g: Grade }) {
                 <div className={quarter + ' period'}>{g.quarter}</div>
                 {/*<div>{g.year}</div>*/}
                 {/*<div>{g.title}</div>*/}
-                <div className={'grade-' + quarter +' grades'}>{g.letterGrade} {g.numberGrade}</div>
+                <div className={'grade-' + quarter + ' grades'}>{g.letterGrade} {g.numberGrade}</div>
                 <div className={'absent-' + quarter + ' grades'}>{g.daysAbsent}</div>
                 {/*</div>*/}
 

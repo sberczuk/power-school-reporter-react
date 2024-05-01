@@ -102,7 +102,6 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
     try {
         let r = mpIterator.iterateNext()
         while (r) {
-            console.log('iterating buildQuarterlyGrades')
             console.log(r)
             console.log(codeNode)
             const pct = findSingleNode(doc, r, './/def:MarkData/def:Percentage')?.singleNodeValue?.textContent
