@@ -65,21 +65,41 @@ function App() {
     )
 }
 
-function SubjectView({grades}: {grades:Grade[]}) {
-    const display = []
+function SubjectView({grades}: { grades: Grade[] | undefined }) {
+    if (!grades) {
+        return (
+            <></>
+        )
+    }
+    const displayGrades = []
+    const displayComments = []
+    let courseTitle = ''
+    let courseCode = ''
     for (const a of grades) {
-        display.push(<GradeView g={a}/>)
+        const quarter = a.quarter.toLowerCase();
+        courseTitle = a.title
+        courseCode = a.code
+        displayGrades.push(<GradeView g={a}/>)
+        displayComments.push(<div className={'comments-' +quarter +' comments'}>{a.comments}</div> )
     }
     return (
         <>
-            <div class={'grid-container'}>
-                {display}
+            <div className={'grid-container'}>
+                <div className={'course-title'}>{courseTitle} {courseCode}</div>
+                <div className={'grade-container'}>
+                    {displayGrades}
+                </div>
+                <div className={'comments-container'}>
+                    {displayComments}
+                </div>
             </div>
         </>
-    );
+    )
+        ;
 }
 
 function GradesView({gg}: { gg: Grade[] }) {
+    console.log("GRADES VIEW " + gg.length)
     if (!gg) {
         return null
     }
@@ -92,42 +112,50 @@ function GradesView({gg}: { gg: Grade[] }) {
         gradesByClass.get(e.code)?.push(e)
     })
     const display = []
+    console.log("GBC")
+    console.log(gradesByClass)
 
     // for each class grab each grade and display it
     function displaySubjectGrade(v, k, map) {
+        console.log("displaying " + k + " " + v.length)
         for (const a of v) {
-            // display.push(<GradeView key={a.code + a.year + a.quarter} g={a}/>)
-            display.push(<SubjectView key={a.code+a.year+a.q} grades={v}/>)
+            console.log("...displaying " + a.code)
+
+            display.push(<SubjectView key={a.code + a.year + a.quarter} grades={v}/>)
         }
+        console.log("DONE displaying " + k)
+
     }
 
+    // const subjectIterator = gradesByClass.keys()
+    // let subject = subjectIterator.next();
+    // while (subject) {
+    //     const grades = gradesByClass.get(subject);
+    //     display.push(<SubjectView key={subject} grades={grades}/>)
+    //
+    //     subject = subjectIterator.next()
+    // }
     gradesByClass.forEach(displaySubjectGrade)
 
-
+    console.log("DISPLAY ARRAY " + display.length)
+    console.log(display)
     return (<>
-        <div class={'grid-container'}>
-            {display}
-        </div>
+        {display}
     </>)
 }
 
-function GradeView({
-                       g
-                   }: {
-    g: Grade
-}) {
+function GradeView({g}: { g: Grade }) {
     if (g) {
+        const quarter = g.quarter.toLowerCase();
         return (
             <>
-                <div class={'grade-container'}>
-
-                    <div class={g.quarter.toLowerCase()}>
-                        <div>{g.year}</div>
-                        <div>{g.quarter}</div>
-                        <div>{g.title}</div>
-                        <div class={'grade-' + g.quarter.toLowerCase()}>{g.letterGrade} {g.grade}</div>
-                    </div>
-                </div>
+                {/*<div className={'grade-container'}>*/}
+                <div className={quarter + ' period'}>{g.quarter}</div>
+                {/*<div>{g.year}</div>*/}
+                {/*<div>{g.title}</div>*/}
+                <div className={'grade-' + quarter +' grades'}>{g.letterGrade} {g.numberGrade}</div>
+                <div className={'absent-' + quarter + ' grades'}>{g.daysAbsent}</div>
+                {/*</div>*/}
 
             </>
         )

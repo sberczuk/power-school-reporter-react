@@ -109,7 +109,7 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
             const letterGrade = findSingleNode(doc, r, './/def:MarkData/def:Letter')?.singleNodeValue?.textContent
             const comments = findSingleNode(doc, r, './/def:MarkData/def:Narrative')?.singleNodeValue?.textContent
             const absent = findSingleNode(doc, r, './/def:DaysAbsent')?.singleNodeValue?.textContent
-            // console.log(c)
+            console.log(c)
             const g: Grade = {
                 code: courseCode, title: courseTitle,
                 instructor: instructorFn + " " + instructorLn,
