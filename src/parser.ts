@@ -6,6 +6,19 @@ export function fixXML(xmlData: string): string {
     return xmlData
 }
 
+//TODO: Write a Test
+// see: https://www.jetbrains.com/help/webstorm/vitest.html#createRunConfigVitest
+// https://vitest.dev/guide/
+// TODO: test to handle wellformed
+export function mimeToXml(inString:string):string{
+    const xmlStart = inString.indexOf('<?xml version="1.0" encoding="UTF-8"?>');
+    const lastCLosintagIx = inString.lastIndexOf('</Stu')
+    // find an incomplete closing tag
+    const xmlWithoutClose = inString.substring(xmlStart, lastCLosintagIx);
+    const xml = xmlWithoutClose +'\n</StudentRecordExchangeData>';
+    console.log(xml)
+    return xml
+}
 
 const nsResolver = function (ns: string) {
     if (ns === 'ns2') {

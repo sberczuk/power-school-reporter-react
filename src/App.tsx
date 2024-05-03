@@ -3,7 +3,7 @@ import {StudentDisplay} from './Student.tsx'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {parseXML} from "./parser.ts";
+import {mimeToXml, parseXML} from "./parser.ts";
 import {Grade, Student, StudentReport,} from "./types.ts";
 import {GradesView} from "./GradesView.tsx";
 
@@ -25,7 +25,8 @@ function App() {
         r.readAsText(gradeReport)
         r.onloadend = () => {
             if (typeof r.result === "string") {
-                const data: StudentReport = parseXML(r.result);
+                const xmlStr = mimeToXml(r.result);
+                const data: StudentReport = parseXML(xmlStr);
                 setStudent(data.student)
                 console.log("STUDENT")
                 console.log(data.student)
