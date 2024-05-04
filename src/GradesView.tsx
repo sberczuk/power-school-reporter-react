@@ -3,11 +3,11 @@ import {SubjectView} from "./SubjectView.tsx";
 
 export function GradesView({gg, selectedYear}: { gg: Grade[], selectedYear?: string }) {
     console.log("GRADES VIEW " + gg.length)
-    if (!gg) {
+    if (gg.length == 0 || selectedYear=='') {
         return null
     }
     //TODO: Pass in year to filter on as a prop
-    const yearGrades = gg.filter((g) => g.year = selectedYear);
+    const yearGrades = gg.filter((g) => g.year == selectedYear);
     const gradesByClass = new Map<string, Grade[]>()
     yearGrades.forEach((e) => {
         if (!gradesByClass.get(e.code)) {
