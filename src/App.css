@@ -51,6 +51,9 @@
   html, body {
     margin: 0;
   }
+  .noPrint{
+    display: none !important;
+  }
 }
 
 .main-container {

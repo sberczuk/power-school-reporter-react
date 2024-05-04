@@ -97,7 +97,7 @@ function App() {
 // mame years change. Allow for  update when the year is selected.
     return (
         <>
-            <div>
+            <div className={'noPrint'}>
                 <a href="https://vitejs.dev" target="_blank">
                     <img src={viteLogo} className="logo" alt="Vite logo"/>
                 </a>
@@ -105,10 +105,10 @@ function App() {
                     <img src={reactLogo} className="logo react" alt="React logo"/>
                 </a>
             </div>
-            <h1>Power School Reporter Vite + React</h1>
+            <h1 className={'noPrint'}>Power School Reporter Vite + React</h1>
 
             {/*<FileUpload onFileLoaded={onNewFile}></FileUpload>*/}
-            <div>
+            <div  className={'noPrint'}>
                 <form id='form'>
                     <label htmlFor={'gradeReport'}>Select a Power School Data File:</label>&nbsp;
                     <input type="file" name="gradeReport" onChange={onNewFile} className='form-control'/>
