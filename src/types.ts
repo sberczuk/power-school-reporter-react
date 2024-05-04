@@ -19,7 +19,8 @@ interface Course {
 }
 
 export interface StudentReport {
-    student: Student,
+    student: Student
+    years :string[]
     grades: Grade[]
 }
 

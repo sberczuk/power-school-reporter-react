@@ -12,18 +12,24 @@ export function SubjectView({grades}: { grades: Grade[] | undefined }) {
     let courseTitle = ''
     let teacher = ''
     let courseCode = ''
+    let year =''
     for (const a of grades) {
         const quarter = a.quarter.toLowerCase();
         courseTitle = a.title
         courseCode = a.code
         teacher = a.instructor
-        displayGrades.push(<GradeView g={a}/>)
-        displayComments.push(<div className={'comments-' + quarter + ' comments'}>{a.quarter + ': ' + a.comments}</div>)
+        year = a.year
+        const key = a.year+a.quarter+a.code;
+
+        displayGrades.push(<GradeView g={a} key={key}/>)
+        console.log("YEAR")
+        console.log(a.year)
+        displayComments.push(<div key={a.year + a.quarter+a.code+'comments'} className={'comments-' + quarter + ' comments'}>{a.quarter + ': ' + a.comments}</div>)
     }
     return (
         <>
             <div className={'grid-container'}>
-                <div className={'course-title course'}>{courseTitle} {courseCode}</div>
+                <div className={'course-title course'}>{courseTitle} {courseCode} {year}</div>
                 <div className={'course-teacher teacher'}>{teacher}</div>
                 <div className={'grade-container'}>
                     {displayGrades}

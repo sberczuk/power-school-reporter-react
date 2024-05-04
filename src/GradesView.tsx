@@ -1,13 +1,13 @@
 import {Grade} from "./types.ts";
 import {SubjectView} from "./SubjectView.tsx";
 
-export function GradesView({gg}: { gg: Grade[] }) {
+export function GradesView({gg, selectedYear}: { gg: Grade[], selectedYear?: string }) {
     console.log("GRADES VIEW " + gg.length)
     if (!gg) {
         return null
     }
     //TODO: Pass in year to filter on as a prop
-    const yearGrades = gg.filter((g) => g.year = "2022");
+    const yearGrades = gg.filter((g) => g.year = selectedYear);
     const gradesByClass = new Map<string, Grade[]>()
     yearGrades.forEach((e) => {
         if (!gradesByClass.get(e.code)) {
