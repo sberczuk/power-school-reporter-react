@@ -16,11 +16,9 @@ function YearSelector({yearValues, onChange}: {
     const [values,] = useState<string[]>(yearValues)
     const yearSelectOptions = () => {
         // if (values.length < 0) {
-        console.log("setting  selector  options")
-        console.log(yearValues)
-        const hcYears = ['2002', '2003', '2004'];
-
-         const elements = yearValues.map((v) => {
+        // add a  default blank value
+        yearValues.push("-")
+         const elements = yearValues.sort().map((v) => {
             return <option key={v} value={v}>{v}</option>
         });
          console.log("OPTIONS")
@@ -32,7 +30,7 @@ function YearSelector({yearValues, onChange}: {
     }
     return (<label>
         Select year:
-        <select name={'year'} onChange={onChange}>
+        <select name={'year'} onChange={onChange}  defaultValue={'-'}>
             {yearSelectOptions()}
         </select>
     </label>)
@@ -108,7 +106,7 @@ function App() {
                 </a>
             </div>
             <h1>Power School Reporter Vite + React</h1>
-            
+
             {/*<FileUpload onFileLoaded={onNewFile}></FileUpload>*/}
             <div>
                 <form id='form'>
