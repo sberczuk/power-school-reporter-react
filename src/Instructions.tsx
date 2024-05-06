@@ -13,7 +13,7 @@ export function Instructions() {
                 <li>Select a year report on</li>
                 <li>View or Print. Print just display the grade table.</li>
             </ul>
-            
+
         </div>
     );
 }
