@@ -20,7 +20,8 @@ export function GradesView({gg, selectedYear}: { gg: Grade[], selectedYear?: str
     const buildGradeRows = () => {
         const rows: React.JSX.Element[] = [];
 
-        function displaySubjectGrade(v, k, map) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        function displaySubjectGrade(v:Grade[], k:string, _map: Map<string, Grade[]>) {
             rows.push(<SubjectView key={k} grades={v}/>)
         }
 

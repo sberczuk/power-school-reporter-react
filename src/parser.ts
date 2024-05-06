@@ -1,29 +1,22 @@
-import {Grade, Student, StudentReport, YearGrades} from "./types.ts"
+import {Grade, Student, StudentReport} from "./types.ts"
 
-// fixXML will remove the mime prefix material and check for a closing tag
-// do this after we get the basic plumbing working
-export function fixXML(xmlData: string): string {
-    return xmlData
-}
 
-//TODO: Write a Test
-// see: https://www.jetbrains.com/help/webstorm/vitest.html#createRunConfigVitest
-// https://vitest.dev/guide/
-// TODO: test to handle wellformed
-export function mimeToXml(inString:string):string{
+export function mimeToXml(inString: string): string {
     const xmlStart = inString.indexOf('<?xml version="1.0" encoding="UTF-8"?>');
     const lastCLosintagIx = inString.lastIndexOf('</Stu')
     // find an incomplete closing tag
     const xmlWithoutClose = inString.substring(xmlStart, lastCLosintagIx);
-    const xml = xmlWithoutClose +'\n</StudentRecordExchangeData>';
-    return xml
+    return xmlWithoutClose + '\n</StudentRecordExchangeData>';
 }
 
-const nsResolver = function (ns: string) {
-    if (ns === 'ns2') {
-        return 'http://stumo.transcriptcenter.com'
-    } else {
-        return 'http://www.sifinfo.org/infrastructure/2.x'
+
+const nsResolver = {
+    lookupNamespaceURI: function (ns: string) {
+        if (ns === 'ns2') {
+            return 'http://stumo.transcriptcenter.com'
+        } else {
+            return 'http://www.sifinfo.org/infrastructure/2.x'
+        }
     }
 }
 
@@ -44,30 +37,30 @@ export function findElementIterator(doc: Document, baseNode: Node, xpathsSpec: s
 // (Ideally I'd use the actual path, but this seems to be more reliable
 export function findSingleNode(doc: Document, baseNode: Node, allTermsXPath: string) {
 
-    const retElement = doc.evaluate(
+    // @ts-ignore
+    return doc.evaluate(
         allTermsXPath,
         baseNode,
         nsResolver,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
         null,
     );
-    return retElement;
 } // build a term from a term node
-const studentNameXPath = "/def:StudentRecordExchangeData/def:StudentDemographicRecord/def:StudentPersonalData/def:Name";
 export const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
 const allCoursesXPath = ".//def:Course";
-const allYearsXPath = "//def:SchoolYear";
 const allMarkingPeriodsXPath = ".//def:MarkingPeriod";
 const instructorFirstNameXPath = ".//def:SIF_ExtendedElement[@Name='InstructorFirstName']"
 const instructorLastNameXPath = ".//def:SIF_ExtendedElement[@Name='InstructorLastName']"
-const schoolNameXPath = ".//def:SIF_ExtendedElement[@Name='SchoolName']"
-let quarterXPath = './/def:SIF_ExtendedElement[@Name="StoreCode"]';
+const quarterXPath = './/def:SIF_ExtendedElement[@Name="StoreCode"]';
 const gradeLevelXPath = ".//def:GradeLevelWhenTaken/ns1:Code"
 
 export function buildCourseGrades(doc: Document, termNode: Node | null) {
+    if (termNode == null) {
+        return []
+    }
 
     const yearXPath = ".//def:TermInfoData/def:SchoolYear";
-    const year = findSingleNode(doc, termNode, yearXPath).singleNodeValue.textContent;
+    const year = findSingleNode(doc, termNode, yearXPath)?.singleNodeValue?.textContent;
 
     const coursesIterator = findElementIterator(doc, termNode, allCoursesXPath);
     const allGrades = []
@@ -75,7 +68,7 @@ export function buildCourseGrades(doc: Document, termNode: Node | null) {
     try {
         let r = coursesIterator.iterateNext()
         while (r) {
-            const termGrades = buildQuarterlyGrades(doc, r, year);
+            const termGrades = buildQuarterlyGrades(doc, r, year!);
             allGrades.push(...termGrades)
             r = coursesIterator.iterateNext();
         }
@@ -96,12 +89,11 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
 
     // console.log(courseTitle + ' ' + courseCode)
 
-    const c = {title: courseTitle, content: courseCode}
     const term = findSingleNode(doc, courseNode, quarterXPath);
-    const gradeLevel = findSingleNode(doc, courseNode, gradeLevelXPath).singleNodeValue.textContent;
+    const gradeLevel = findSingleNode(doc, courseNode, gradeLevelXPath)?.singleNodeValue?.textContent;
 
-    const instructorFn = findSingleNode(doc, courseNode, instructorFirstNameXPath).singleNodeValue.textContent;
-    const instructorLn = findSingleNode(doc, courseNode, instructorLastNameXPath).singleNodeValue.textContent;
+    const instructorFn = findSingleNode(doc, courseNode, instructorFirstNameXPath)?.singleNodeValue?.textContent;
+    const instructorLn = findSingleNode(doc, courseNode, instructorLastNameXPath)?.singleNodeValue?.textContent;
 
 // there should only be one MP below a course
     const mpIterator = findElementIterator(doc, courseNode, allMarkingPeriodsXPath);
@@ -114,17 +106,24 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
             const letterGrade = findSingleNode(doc, r, './/def:MarkData/def:Letter')?.singleNodeValue?.textContent
             const comments = findSingleNode(doc, r, './/def:MarkData/def:Narrative')?.singleNodeValue?.textContent
             const absent = findSingleNode(doc, r, './/def:DaysAbsent')?.singleNodeValue?.textContent
+
+            //TODO: Figure out how best to  avoid the non  null check
+            // @ts-ignore
+            let quarter = term?.singleNodeValue?.textContent;
+            if (quarter == null || quarter == undefined) {
+                quarter = ""
+            }
             const g: Grade = {
-                code: courseCode,
-                title: courseTitle,
+                code: courseCode!,
+                title: courseTitle!,
                 instructor: instructorFn + " " + instructorLn,
                 year: year,
-                grade: gradeLevel,
-                quarter: term.singleNodeValue.textContent,
-                letterGrade: letterGrade,
-                numberGrade: pct,
-                daysAbsent: absent,
-                comments: comments
+                grade: gradeLevel!,
+                quarter: quarter,
+                letterGrade: letterGrade!,
+                numberGrade: pct!,
+                daysAbsent: absent!,
+                comments: comments!
             }
             allGrades.push(g)
             r = mpIterator.iterateNext();
@@ -135,7 +134,7 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
     return allGrades
 }
 
-function buildStudent(doc: Document, documentElement: HTMLElement):Student {
+function buildStudent(doc: Document, documentElement: HTMLElement): Student {
     const studentNode = findSingleNode(doc, documentElement, "//def:StudentDemographicRecord/def:StudentPersonalData").singleNodeValue;
     if (studentNode) {
         const firstName = findSingleNode(doc, studentNode, ".//def:FirstName")?.singleNodeValue?.textContent
@@ -143,14 +142,13 @@ function buildStudent(doc: Document, documentElement: HTMLElement):Student {
         const middleName = findSingleNode(doc, studentNode, ".//def:MiddleName")?.singleNodeValue?.textContent
 
         return {
-            givenName: firstName,
-            familyName: familyName,
-            middleName: middleName
+            givenName: firstName!,
+            familyName: familyName!,
+            middleName: middleName!
         }
     }
     return {givenName: '', middleName: '', familyName: ''}
 }
-
 
 
 export function parseXML(xmlStr: string): StudentReport {
@@ -160,7 +158,7 @@ export function parseXML(xmlStr: string): StudentReport {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlStr, "application/xml");
     const allYearData: Grade[] = []
-    let years : string[] = []
+    let years: string[] = []
 
     let student = {givenName: '', middleName: '', familyName: ''}
 // print the name of the root element or error message
@@ -182,9 +180,9 @@ export function parseXML(xmlStr: string): StudentReport {
         }
 
         //we could do this, or query the XML
-         years =Array.from(new Set(allYearData.map((g)=> g.year)))
+        years = Array.from(new Set(allYearData.map((g) => g.year)))
         console.log("YEARS")
         console.log(years)
     }
-    return {student: student, grades: allYearData, years:years}
+    return {student: student, grades: allYearData, years: years}
 }

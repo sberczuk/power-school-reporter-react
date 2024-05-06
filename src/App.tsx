@@ -13,24 +13,23 @@ function YearSelector({yearValues, onChange}: {
     yearValues: string[],
     onChange: ChangeEventHandler
 }): JSX.Element {
-    const [values,] = useState<string[]>(yearValues)
     const yearSelectOptions = () => {
         // if (values.length < 0) {
         // add a  default blank value
         yearValues.push("-")
-         const elements = yearValues.sort().map((v) => {
+        const elements = yearValues.sort().map((v) => {
             return <option key={v} value={v}>{v}</option>
         });
-         console.log("OPTIONS")
-         console.log(elements)
-         return elements;
+        console.log("OPTIONS")
+        console.log(elements)
+        return elements;
         // }  else  {
         //     return  []
         // }
     }
     return (<label>
         Select year:
-        <select name={'year'} onChange={onChange}  defaultValue={'-'}>
+        <select name={'year'} onChange={onChange} defaultValue={'-'}>
             {yearSelectOptions()}
         </select>
     </label>)
@@ -38,13 +37,12 @@ function YearSelector({yearValues, onChange}: {
 }
 
 function App() {
-    const [count, setCount] = useState(0)
     const [student, setStudent] = useState<Student>({familyName: "", givenName: "", middleName: ""})
     const [allGrades, setAllGrades] = useState<Grade[]>([])
     const [allYears, setAllYears] = useState<string[]>([])
     const [selectedYear, setSelectedYear] = useState('')
 
-    function onNewFile(e: any) {
+    function onNewFile(_e: any) {
         // TODO: should this use the input element event?
         const form = document.getElementById("form");
         // @ts-ignore
@@ -67,29 +65,8 @@ function App() {
     }
 
 
-    const yearSelectOptions = () => {
-        const hcYears = ['2002', '2003', '2004'];
-        return hcYears.map((v) => {
-            return <option value={v}>v</option>
-        });
-    }
-
-
-    const yearSelector = () => {
-        if (allYears.length > 1) {
-            console.log("returning selector")
-            return (<label>
-                Select year:
-                <select name={'year'} onChange={(e) => setSelectedYear(e.target.value)}>
-                    {yearSelectOptions()}
-                </select>
-            </label>)
-        } else {
-            return (<></>)
-        }
-    }
-
-    function updateSelectedYear(e){
+    //TODO: Find the right type
+    function updateSelectedYear(e:React.ChangeEvent<HTMLInputElement>){
         setSelectedYear(e.target.value)
         e.preventDefault()
     }

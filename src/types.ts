@@ -4,19 +4,8 @@ export interface Student {
     familyName: string,
 }
 
-interface MarkingPeriod {
-    numberGrade: string
-    letterGrade: string
-    comments: string
 
-}
 
-interface Course {
-    code: string
-    title: string
-    markingPeriod: MarkingPeriod[];
-
-}
 
 export interface StudentReport {
     student: Student
@@ -24,10 +13,6 @@ export interface StudentReport {
     grades: Grade[]
 }
 
-export interface YearGrades {
-    year: string
-    grades: Grade[]
-}
 
 export interface Grade {
     code: string
@@ -42,6 +27,3 @@ export interface Grade {
     daysAbsent: string
 }
 
-interface Term {
-    courses: Course[];
-}
