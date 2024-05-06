@@ -9,11 +9,11 @@ export function Instructions() {
             <ul>
                 <li>Navigate to the Powerschool Portal and log in</li>
                 <li>Look for the export data icon on the top right of the screen and click it</li>
-                <li>Open File and browse for the file</li>
-                <li>Select a year report On</li>
-                <li>Print</li>
+                <li>Click the <b>Choose File</b> button and browse for the file you just downloaded</li>
+                <li>Select a year report on</li>
+                <li>View or Print. Print just display the grade table.</li>
             </ul>
-            <li></li>
+            
         </div>
     );
 }

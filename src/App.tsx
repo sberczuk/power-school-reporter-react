@@ -76,16 +76,16 @@ function App() {
     return (
         <>
             <div className={'noPrint'}>
+                <p>Built with
                 <a href="https://vitejs.dev" target="_blank">
                     <img src={viteLogo} className="logo" alt="Vite logo"/>
-                </a>
+                </a> and
                 <a href="https://react.dev" target="_blank">
                     <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
+                </a></p>
             </div>
-            <h1 className={'noPrint'}>Power School Reporter Vite + React</h1>
+            <h1 className={'noPrint'}>Power School Report Card Tool</h1>
             <Instructions/>
-            {/*<FileUpload onFileLoaded={onNewFile}></FileUpload>*/}
             <div className={'noPrint'}>
                 <form id='form'>
                     <label htmlFor={'gradeReport'}>Select a Power School Data File:</label>&nbsp;
