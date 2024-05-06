@@ -13,6 +13,7 @@ export function Instructions() {
                 <li>Select a year report on</li>
                 <li>View or Print. Print just display the grade table.</li>
             </ul>
+            <p>&copy; 2024 Steve Berczuk</p>
 
         </div>
     );
