@@ -6,6 +6,7 @@ import './App.css'
 import {mimeToXml, parseXML} from "./parser.ts";
 import {Grade, Student, StudentReport,} from "./types.ts";
 import {GradesView} from "./GradesView.tsx";
+import {Instructions} from "./Instructions.tsx";
 
 
 // yearValues appears to be unset
@@ -66,7 +67,7 @@ function App() {
 
 
     //TODO: Find the right type
-    function updateSelectedYear(e:React.ChangeEvent<HTMLInputElement>){
+    function updateSelectedYear(e: React.ChangeEvent<HTMLInputElement>) {
         setSelectedYear(e.target.value)
         e.preventDefault()
     }
@@ -83,9 +84,9 @@ function App() {
                 </a>
             </div>
             <h1 className={'noPrint'}>Power School Reporter Vite + React</h1>
-
+            <Instructions/>
             {/*<FileUpload onFileLoaded={onNewFile}></FileUpload>*/}
-            <div  className={'noPrint'}>
+            <div className={'noPrint'}>
                 <form id='form'>
                     <label htmlFor={'gradeReport'}>Select a Power School Data File:</label>&nbsp;
                     <input type="file" name="gradeReport" onChange={onNewFile} className='form-control'/>
