@@ -2,7 +2,13 @@ import {Grade} from "./types.ts";
 
 export function GradeView({g}: { g: Grade }) {
     if (g) {
-        const quarter = g.quarter.toLowerCase();
+        let quarter = g.quarter.toLowerCase();
+
+        // handle terms (T1) as well aq Querters(Q1)
+        // TODO: Find a better way to do this based on the universa of 'quarter' values
+        if (quarter.startsWith('t')){
+           quarter  = quarter.replace('t', 'q');
+        }
         return (
             <>
                 {/*<div className={'grade-container'}>*/}

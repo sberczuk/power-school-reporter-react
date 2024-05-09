@@ -1,7 +1,6 @@
 import {ChangeEventHandler, useState} from 'react'
 import {StudentDisplay} from './Student.tsx'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 import {mimeToXml, parseXML} from "./parser.ts";
 import {Grade, Student, StudentReport,} from "./types.ts";
@@ -75,15 +74,6 @@ function App() {
 // mame years change. Allow for  update when the year is selected.
     return (
         <>
-            <div className={'noPrint'}>
-                <p>Built with
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo"/>
-                </a> and
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a></p>
-            </div>
             <h1 className={'noPrint'}>Power School Report Card Tool</h1>
             <Instructions/>
             <div className={'noPrint'}>

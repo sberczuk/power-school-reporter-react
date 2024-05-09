@@ -9,11 +9,11 @@ export function Instructions() {
 
             <p> All the processing is done in the browser.</p>
             <ul>
-                <li>Navigate to the Powerschool Portal and log in</li>
-                <li>Look for the My Data icon on the top right of the screen and click it. See Below for details</li>
-                <li>Click the <b>Choose File</b> button and browse for the file you just downloaded</li>
+                <li>Navigate to the Powerschool _Web_ Portal and log in. (the mobile app does not seem to support export)</li>
+                <li>Look for the My Data icon on the top right of the screen and click it. Save the data. See Below for details</li>
+                <li>Click the <b>Choose File</b> button and browse for the file you just downloaded.</li>
                 <li>Select a year report on</li>
-                <li>View or Print. Print just display the grade table.</li>
+                <li>View or Print. Print will just display the grade table without the web app content.</li>
             </ul>
             <p> myData Icon <img src={psLogo}/></p>
             <p>&copy; 2024 Steve Berczuk</p>

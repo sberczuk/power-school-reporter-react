@@ -1,4 +1,28 @@
-# React + TypeScript + Vite
+
+
+
+# Power School Report Card Tool
+
+When our school system switched from paper report card to using the power school portal, 
+we lost the ability to view a concise summary of a school year's activities 
+including grades and comments.
+
+Since Power School has a data export function, I wrote a tool that lets you generate year by year "report cards"
+that you save in PDF form (or print even) usng your browser's print function.
+
+The app is currently deployed on  [Github pages](https://sberczuk.github.io/power-school-reporter-react/)
+
+The data is processed entirely in the browser on your device.
+
+Some caveats:
+
+- The layout assumes that the marking periods are labeled as 'Terms' (T1, T2, T3, Y1) or 'Quarters' (Q1, Q2, Q3, Q4, Y1)
+- The layout is pretty basic. I welcome suggestions, or even [code contributions](https://github.com/sberczuk/power-school-reporter-react), though I may not get to everything promptly.
+
+
+
+
+## Template info
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
