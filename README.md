@@ -12,17 +12,24 @@ that you save in PDF form (or print even) usng your browser's print function.
 
 The app is currently deployed on  [Github pages](https://sberczuk.github.io/power-school-reporter-react/)
 
-The data is processed entirely in the browser on your device.
+The data is processed _entirely in the browser_ on your device.
 
 Some caveats:
 
 - The layout assumes that the marking periods are labeled as 'Terms' (T1, T2, T3, Y1) or 'Quarters' (Q1, Q2, Q3, Q4, Y1)
 - The layout is pretty basic. I welcome suggestions, or even [code contributions](https://github.com/sberczuk/power-school-reporter-react), though I may not get to everything promptly.
 
+If you want to  contribute a change submit a  pull reqest or fork the project
+
+## Using the App
+
+If you just want to try the app it is [deployed on Github Pages](https://sberczuk.github.io/power-school-reporter-react/).
+I built this for my school district, and I'm not entirely sure what elemens of the XML export are custom
+per district, so it may not work as expected.
 
 
 
-## Template info
+## App Template info
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
