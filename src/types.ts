@@ -18,6 +18,7 @@ export interface Grade {
     code: string
     title: string
     instructor: string
+    school:string
     year: string
     grade: string
     quarter: string

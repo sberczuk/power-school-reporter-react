@@ -37,7 +37,6 @@ export function findElementIterator(doc: Document, baseNode: Node, xpathsSpec: s
 // (Ideally I'd use the actual path, but this seems to be more reliable
 export function findSingleNode(doc: Document, baseNode: Node, allTermsXPath: string) {
 
-    // @ts-ignore
     return doc.evaluate(
         allTermsXPath,
         baseNode,
@@ -53,6 +52,7 @@ const allMarkingPeriodsXPath = ".//def:MarkingPeriod";
 const instructorFirstNameXPath = ".//def:SIF_ExtendedElement[@Name='InstructorFirstName']"
 const instructorLastNameXPath = ".//def:SIF_ExtendedElement[@Name='InstructorLastName']"
 const quarterXPath = './/def:SIF_ExtendedElement[@Name="StoreCode"]';
+const schoolXPath = './/def:SIF_ExtendedElement[@Name="SchoolName"]';
 const gradeLevelXPath = ".//def:GradeLevelWhenTaken/ns1:Code"
 
 export function buildCourseGrades(doc: Document, termNode: Node | null) {
@@ -62,14 +62,15 @@ export function buildCourseGrades(doc: Document, termNode: Node | null) {
 
     const yearXPath = ".//def:TermInfoData/def:SchoolYear";
     const year = findSingleNode(doc, termNode, yearXPath)?.singleNodeValue?.textContent;
-
+    const school = findSingleNode(doc, termNode,schoolXPath)?.singleNodeValue?.textContent;
     const coursesIterator = findElementIterator(doc, termNode, allCoursesXPath);
     const allGrades = []
 
     try {
         let r = coursesIterator.iterateNext()
         while (r) {
-            const termGrades = buildQuarterlyGrades(doc, r, year!);
+            // @ts-ignore
+            const termGrades = buildQuarterlyGrades(doc, r, year, school!);
             allGrades.push(...termGrades)
             r = coursesIterator.iterateNext();
         }
@@ -80,12 +81,12 @@ export function buildCourseGrades(doc: Document, termNode: Node | null) {
 
 }
 
-function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
+function buildQuarterlyGrades(doc: Document, courseNode: Node, year:string, school: string) {
     const codeNode = findSingleNode(doc, courseNode, './/def:CourseCode');
     // console.log(codeNode.singleNodeValue)
 
     const courseCode = codeNode?.singleNodeValue?.textContent
-    // this assumes that that the nodes exist. If the don't it's an issue
+    // this assumes that the nodes exist. If the don't it's an issue
     const courseTitle = findSingleNode(doc, courseNode, './/def:CourseTitle')?.singleNodeValue?.textContent;
 
     // console.log(courseTitle + ' ' + courseCode)
@@ -118,6 +119,7 @@ function buildQuarterlyGrades(doc: Document, courseNode: Node, year: string) {
                 code: courseCode!,
                 title: courseTitle!,
                 instructor: instructorFn + " " + instructorLn,
+                school: school,
                 year: year,
                 grade: gradeLevel!,
                 quarter: quarter,
