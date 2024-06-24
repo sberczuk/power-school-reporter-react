@@ -47,6 +47,7 @@ export function findSingleNode(doc: Document, baseNode: Node, allTermsXPath: str
     );
 } // build a term from a term node
 export const allTermsXPath = "/def:StudentRecordExchangeData/def:StudentAcademicRecord/def:CourseHistory/def:Term";
+
 const allCoursesXPath = ".//def:Course";
 const allMarkingPeriodsXPath = ".//def:MarkingPeriod";
 const instructorFirstNameXPath = ".//def:SIF_ExtendedElement[@Name='InstructorFirstName']"

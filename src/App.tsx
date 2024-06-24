@@ -23,9 +23,6 @@ function YearSelector({yearValues, onChange}: {
         console.log("OPTIONS")
         console.log(elements)
         return elements;
-        // }  else  {
-        //     return  []
-        // }
     }
     return (<label>
         Select year:
@@ -85,7 +82,7 @@ function App() {
 
                 <YearSelector yearValues={allYears} onChange={updateSelectedYear}/>
             </div>
-            <StudentDisplay student={student}/>
+            <StudentDisplay student={student} selectedYear={selectedYear}/>
             <GradesView gg={allGrades} selectedYear={selectedYear}/>
         </>
     )
